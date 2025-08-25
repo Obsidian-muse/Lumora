@@ -1,0 +1,772 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title data-translate="mood-tracker">Mood Tracker</title>
+  <!-- Meta Description -->
+<meta name="description" content="Lumora - A dreamy mood tracker to log your feelings, play mini-games, and nurture your emotional well-being.">
+
+<!-- Keywords (optional for SEO) -->
+<meta name="keywords" content="Mood Tracker, Mental Health, Lumora, Journal, Whisper Garden, Emotional Wellbeing">
+
+<!-- Author -->
+<meta name="author" content="Lumora">
+
+<!-- Open Graph for Social Media -->
+<meta property="og:title" content="Lumora - Mood Tracker">
+<meta property="og:description" content="A dreamy mood tracker with games & journaling to brighten your day.">
+<meta property="og:image" content="assets/lumora.png">
+<meta property="og:url" content="https://your-website-url.com">
+<meta property="og:type" content="website">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lumora - Mood Tracker">
+<meta name="twitter:description" content="A dreamy mood tracker with games & journaling to brighten your day.">
+<meta name="twitter:image" content="assets/lumora.png">
+
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/lumora.png">
+
+
+  <style>
+    /* Settings button */
+    .settings-icon {
+      width: 60px;
+      height: 60px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1001;
+      cursor: pointer;
+      border-radius: 50%;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+    }
+
+    .settings-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-color);
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      filter: brightness(0.8);
+    }
+
+    .settings-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px var(--accent-color);
+    }
+
+    /* Theme Animation Base Styles */
+    .theme-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    /* Sakura Petals Animation */
+    .sakura-petal {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: radial-gradient(ellipse at center, #ffb7d5 0%, #ff9ec7 50%, #ff85b8 100%);
+      border-radius: 50% 0 50% 0;
+      opacity: 0.8;
+      animation: sakuraFall linear infinite;
+      transform-origin: center;
+    }
+
+    .sakura-petal::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: 8px;
+      height: 8px;
+      background: radial-gradient(ellipse at center, #ffe0f0 0%, #ffb7d5 70%);
+      border-radius: 50% 0 50% 0;
+      transform: rotate(45deg);
+    }
+
+    .sakura-petal::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(ellipse at center, #ff9ec7 0%, #ff85b8 100%);
+      border-radius: 50% 0 50% 0;
+      transform: rotate(-45deg);
+    }
+
+    @keyframes sakuraFall {
+      0% {
+        transform: translateY(-100px) translateX(0px) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(calc(100vh + 100px)) translateX(var(--drift)) rotate(var(--rotation));
+        opacity: 0;
+      }
+    }
+
+    /* Forest Leaves Animation */
+    .forest-leaf {
+      position: absolute;
+      width: 16px;
+      height: 20px;
+      background: linear-gradient(45deg, #228B22 0%, #32CD32 30%, #90EE90 60%, #98FB98 100%);
+      border-radius: 0 100% 0 100%;
+      opacity: 0.9;
+      animation: leafFall linear infinite;
+      transform-origin: center;
+    }
+
+    .forest-leaf::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1px;
+      height: 12px;
+      background: #8B4513;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .forest-leaf.autumn {
+      background: linear-gradient(45deg, #FF6347 0%, #FF8C00 30%, #FFD700 60%, #FFA500 100%);
+    }
+
+    .forest-leaf.brown {
+      background: linear-gradient(45deg, #8B4513 0%, #A0522D 30%, #CD853F 60%, #D2691E 100%);
+    }
+
+    @keyframes leafFall {
+      0% {
+        transform: translateY(-100px) translateX(0px) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.9;
+      }
+      25% {
+        transform: translateY(25vh) translateX(var(--sway1)) rotate(var(--rotation1));
+      }
+      50% {
+        transform: translateY(50vh) translateX(var(--sway2)) rotate(var(--rotation2));
+      }
+      75% {
+        transform: translateY(75vh) translateX(var(--sway3)) rotate(var(--rotation3));
+      }
+      90% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(calc(100vh + 100px)) translateX(var(--sway4)) rotate(var(--rotation4));
+        opacity: 0;
+      }
+    }
+
+    /* Neon Lights Animation */
+    .neon-light {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: neonFloat linear infinite;
+      filter: blur(1px);
+    }
+
+    .neon-light.pink {
+      background: #ff1493;
+    }
+
+    .neon-light.cyan {
+      background: #00ffff;
+    }
+
+    .neon-light.lime {
+      background: #39ff14;
+    }
+
+    .neon-light.purple {
+      background: #8a2be2;
+    }
+
+    .neon-light.orange {
+      background: #ff4500;
+    }
+
+    @keyframes neonFloat {
+      0% {
+        transform: translateY(100vh) translateX(0px) scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+        transform: translateY(90vh) translateX(var(--float-x1)) scale(1);
+      }
+      25% {
+        transform: translateY(75vh) translateX(var(--float-x2)) scale(var(--pulse1));
+      }
+      50% {
+        transform: translateY(50vh) translateX(var(--float-x3)) scale(var(--pulse2));
+      }
+      75% {
+        transform: translateY(25vh) translateX(var(--float-x4)) scale(var(--pulse3));
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) translateX(var(--float-x5)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* Pastel Clouds Animation */
+    .pastel-cloud {
+      position: absolute;
+      background: radial-gradient(ellipse at center, rgba(173, 216, 230, 0.6) 0%, rgba(221, 160, 221, 0.4) 50%, rgba(255, 182, 193, 0.3) 100%);
+      border-radius: 50px;
+      opacity: 0.7;
+      animation: cloudDrift linear infinite;
+      filter: blur(2px);
+    }
+
+    @keyframes cloudDrift {
+      0% {
+        transform: translateX(-200px);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      90% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateX(calc(100vw + 200px));
+        opacity: 0;
+      }
+    }
+
+    /* Fade-in and slide-up animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+    /* Performance optimizations */
+    .theme-animation * {
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+
+    /* Hide animations by default */
+    .sakura-animation,
+    .forest-animation,
+    .neon-animation,
+    .pastel-animation {
+      display: none;
+    }
+
+    /* Show active theme animation */
+    body[data-theme="sakura"] .sakura-animation,
+    body[data-theme="forest"] .forest-animation,
+    body[data-theme="neon"] .neon-animation,
+    body[data-theme="pastel"] .pastel-animation {
+      display: block;
+    }
+
+    .logo-box {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 1000; /* stays above other elements */
+}
+
+.logo-img {
+  width: 50px; /* adjust size */
+  height: auto;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  color: #fff;
+  font-family: 'Gloria Hallelujah', cursive; /* match your site aesthetic */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* Mobile: max-width 768px */
+@media (max-width: 768px) {
+  .game-icon, .game-name {
+    width: 160px;
+    height: auto;
+    font-size: 1rem;
+  }
+
+  .logo-img {
+    width: 50px; /* smaller logo on tablets */
+  }
+}
+
+/* Very Small Screens: max-width 480px */
+@media (max-width: 480px) {
+  .game-icon, .game-name {
+    width: 130px;
+    font-size: 0.9rem;
+  }
+
+  .page-title h1 {
+    font-size: 1.5rem;
+  }
+
+  .logo-img {
+    width: 40px; /* smaller logo on phones */
+  }
+}
+
+
+
+  </style>
+
+</head>
+
+<body data-theme="galaxy">
+  
+  <div class="logo-box">
+    <img src="assets/lumora.png" alt="Lumora Logo" class="logo-img" loading="lazy">
+  </div>
+
+
+
+  <!-- 🌈 Mini Game Icon (above journal icon) -->
+  <a href="games.html" class="game-icon" title="Play Mini Games">
+  <img src="assets/game.jpg" alt="Mini Games Icon">
+</a>
+
+  <!-- 📓 Journal Icon -->
+  <a href="journal.html" class="journal-icon" title="Open Journal">
+    <img src="assets/journal.jpg" alt="Journal Icon">
+  </a>
+
+  <!-- Settings Icon -->
+  <a href="settings.html" class="settings-icon" title="Settings">
+    <img src="assets/settings.png" alt="Settings Icon">
+  </a>
+
+  <!-- Keep only one canvas for galaxy bubble animation -->
+  <canvas id="bubbleCanvas" class="theme-animation galaxy-animation"></canvas>
+
+  <!-- Theme-specific animation containers -->
+  <div id="sakuraPetals" class="theme-animation sakura-animation"></div>
+  <div id="pastelClouds" class="theme-animation pastel-animation"></div>
+  <div id="neonLights" class="theme-animation neon-animation"></div>
+
+  <!-- Optional: Extra decorative bubbles (if used only for galaxy theme or disabled otherwise) -->
+  <div class="bubble-container">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+<div class="heading-box">
+  <img src="assets/mood tracker.jpg" alt="Mood Tracker Logo" class="logo-heading" />
+</div>
+
+
+<div class="glass-box">
+  <div class="theme-selector">
+  <p data-translate="choose-theme">Choose a theme:</p>
+  <button class="theme-btn" data-theme="galaxy">🌌 Galaxy</button>
+  <button class="theme-btn" data-theme="sakura">🌸 Sakura</button>
+  <button class="theme-btn" data-theme="pastel">🌤️ Pastel Sky</button>
+  <button class="theme-btn" data-theme="neon">💫 Neon Dream</button>
+</div>
+
+  <div class="mood-selection">
+    <p data-translate="select-mood">Select your mood:</p>
+
+    <div class="mood-options">
+    <button class="mood-btn" data-mood="happy">
+  <img src="assets/happy.jpg" alt="Happy" />
+  <span class="mood-label">Happy</span>
+</button>
+
+
+      <button class="mood-btn" data-mood="sad">
+        <img src="assets/sad.jpg" alt="Sad" />
+        <span class="mood-label">Sad</span>
+      </button>
+
+      <button class="mood-btn" data-mood="angry">
+        <img src="assets/angry.jpg" alt="Angry" />
+        <span class="mood-label">Angry</span>
+      </button>
+
+      <button class="mood-btn" data-mood="anxious">
+        <img src="assets/anxious.jpg" alt="Anxious" />
+        <span class="mood-label">Anxious</span>
+      </button>
+
+      <button class="mood-btn" data-mood="neutral">
+        <img src="assets/neutral.jpg" alt="Neutral" />
+        <span class="mood-label">Neutral</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="note-section">
+    <textarea id="moodNote" placeholder="Write something..." spellcheck="false" data-translate="write-note"></textarea>
+    <button id="saveBtn" data-translate="save-mood">Save Mood</button>
+  </div>
+
+  <h2 data-translate="mood-log">Your Mood Log</h2>
+  <ul id="moodLog"></ul>
+
+    
+
+  <script src="script.js"></script>
+<script>
+// Theme Animation Manager Class
+class ThemeAnimationManager {
+  constructor() {
+    this.activeAnimations = new Set();
+    this.animationFrameId = null;
+    this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  
+  startAnimation(themeName) {
+    this.stopAllAnimations();
+    
+    if (this.isReducedMotion) return; // Respect user preferences
+    
+    // Show only the active theme animation
+    document.querySelectorAll('.theme-animation').forEach(anim => {
+      anim.style.display = 'none';
+    });
+    
+    const activeContainer = document.querySelector(`.${themeName}-animation`);
+    if (activeContainer) {
+      activeContainer.style.display = 'block';
+      this.activeAnimations.add(themeName);
+      
+      // Create animations based on theme
+      switch (themeName) {
+        case 'sakura':
+          this.createSakuraPetals();
+          this.scheduleRefresh('sakura', () => this.createSakuraPetals(), 15000);
+          break;
+        case 'neon':
+          this.createNeonLights();
+          this.scheduleRefresh('neon', () => this.createNeonLights(), 18000);
+          break;
+        case 'pastel':
+          this.createPastelClouds();
+          this.scheduleRefresh('pastel', () => this.createPastelClouds(), 25000);
+          break;
+      }
+    }
+  }
+  
+  scheduleRefresh(themeName, createFunction, interval) {
+    const refresh = () => {
+      if (this.activeAnimations.has(themeName)) {
+        createFunction();
+        setTimeout(refresh, interval);
+      }
+    };
+    setTimeout(refresh, interval);
+  }
+  
+  stopAllAnimations() {
+    this.activeAnimations.clear();
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
+    
+    // Clear all animation containers
+    document.querySelectorAll('.theme-animation').forEach(container => {
+      container.innerHTML = '';
+      container.style.display = 'none';
+    });
+  }
+  
+  handleResize() {
+    // Recreate animations on resize for responsive behavior
+    const activeTheme = document.body.getAttribute('data-theme');
+    if (this.activeAnimations.has(activeTheme)) {
+      this.startAnimation(activeTheme);
+    }
+  }
+
+  // Create sakura petals animation
+  createSakuraPetals() {
+    const container = document.getElementById('sakuraPetals');
+    if (!container) return;
+    
+    // Clear existing petals
+    container.innerHTML = '';
+    
+    for (let i = 0; i < 25; i++) {
+      const petal = document.createElement('div');
+      petal.classList.add('sakura-petal');
+      
+      // Random positioning and timing
+      const startX = Math.random() * window.innerWidth;
+      const drift = (Math.random() - 0.5) * 400; // ±200px drift
+      const rotation = Math.random() * 720 + 360; // 360-1080 degrees
+      const duration = Math.random() * 8 + 12; // 12-20 seconds
+      const delay = Math.random() * 5; // 0-5 second delay
+      const scale = Math.random() * 0.4 + 0.8; // 0.8x-1.2x size
+      
+      petal.style.left = startX + 'px';
+      petal.style.setProperty('--drift', drift + 'px');
+      petal.style.setProperty('--rotation', rotation + 'deg');
+      petal.style.animationDuration = duration + 's';
+      petal.style.animationDelay = delay + 's';
+      petal.style.transform = `scale(${scale})`;
+      
+      container.appendChild(petal);
+    }
+  }
+
+  // Create neon lights animation
+  createNeonLights() {
+    const container = document.getElementById('neonLights');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    const neonColors = ['pink', 'cyan', 'lime', 'purple', 'orange'];
+    
+    for (let i = 0; i < 30; i++) {
+      const light = document.createElement('div');
+      light.classList.add('neon-light');
+      
+      // Random color
+      const color = neonColors[Math.floor(Math.random() * neonColors.length)];
+      light.classList.add(color);
+      
+      // 5-waypoint floating motion
+      const startX = Math.random() * window.innerWidth;
+      const floatX1 = (Math.random() - 0.5) * 300;
+      const floatX2 = (Math.random() - 0.5) * 400;
+      const floatX3 = (Math.random() - 0.5) * 350;
+      const floatX4 = (Math.random() - 0.5) * 300;
+      const floatX5 = (Math.random() - 0.5) * 250;
+      
+      const pulse1 = Math.random() * 1 + 0.5; // 0.5x-1.5x
+      const pulse2 = Math.random() * 1 + 0.5;
+      const pulse3 = Math.random() * 1 + 0.5;
+      
+      const duration = Math.random() * 8 + 15; // 15-23 seconds
+      const delay = Math.random() * 5;
+      
+      light.style.left = startX + 'px';
+      light.style.setProperty('--float-x1', floatX1 + 'px');
+      light.style.setProperty('--float-x2', floatX2 + 'px');
+      light.style.setProperty('--float-x3', floatX3 + 'px');
+      light.style.setProperty('--float-x4', floatX4 + 'px');
+      light.style.setProperty('--float-x5', floatX5 + 'px');
+      light.style.setProperty('--pulse1', pulse1);
+      light.style.setProperty('--pulse2', pulse2);
+      light.style.setProperty('--pulse3', pulse3);
+      light.style.animationDuration = duration + 's';
+      light.style.animationDelay = delay + 's';
+      
+      container.appendChild(light);
+    }
+  }
+
+  // Create pastel clouds animation
+  createPastelClouds() {
+    const container = document.getElementById('pastelClouds');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    for (let i = 0; i < 8; i++) {
+      const cloud = document.createElement('div');
+      cloud.classList.add('pastel-cloud');
+      
+      // Random size and positioning
+      const width = Math.random() * 120 + 80; // 80-200px width
+      const height = width * 0.6; // Maintain aspect ratio
+      const topPosition = Math.random() * 70 + 10; // 10-80% from top
+      const duration = Math.random() * 20 + 30; // 30-50 seconds
+      const delay = Math.random() * 10;
+      
+      cloud.style.width = width + 'px';
+      cloud.style.height = height + 'px';
+      cloud.style.top = topPosition + '%';
+      cloud.style.animationDuration = duration + 's';
+      cloud.style.animationDelay = delay + 's';
+      
+      container.appendChild(cloud);
+    }
+  }
+}
+
+// Initialize animation manager
+const animationManager = new ThemeAnimationManager();
+
+const themes = {
+  galaxy: {
+    '--accent-color': '#7f62f3',
+    '--bg-glow': 'rgba(127, 98, 243, 0.4)',
+    '--font-family': "'Orbitron', sans-serif",
+    '--log-border': 'rgba(255, 255, 255, 0.2)',
+    'backgroundImage': "url('assets/galaxy.jpg')"
+  },
+  sakura: {
+    '--accent-color': '#ffb7d5',
+    '--bg-glow': 'rgba(255, 183, 213, 0.4)',
+    '--font-family': "'Gloria Hallelujah', cursive",
+    '--log-border': 'rgba(255, 255, 255, 0.2)',
+    'backgroundImage': "url('assets/sakura.jpg')"
+  },
+  pastel: {
+    '--accent-color': '#a0e7e5',
+    '--bg-glow': 'rgba(160, 231, 229, 0.4)',
+    '--font-family': "'Gloria Hallelujah', cursive",
+    '--log-border': 'rgba(255, 255, 255, 0.2)',
+    'backgroundImage': "url('assets/pastel.jpg')"
+  },
+  neon: {
+    '--accent-color': '#39ff14',
+    '--bg-glow': 'rgba(57, 255, 20, 0.4)',
+    '--font-family': "'Orbitron', sans-serif",
+    '--log-border': 'rgba(255, 255, 255, 0.2)',
+    'backgroundImage': "url('assets/neon.jpg')"
+  }
+};
+
+// Enhanced theme switching with animations
+document.querySelectorAll('.theme-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    const selectedTheme = button.dataset.theme;
+    const theme = themes[selectedTheme];
+
+    if (theme) {
+      // Apply theme styles
+      Object.entries(theme).forEach(([key, value]) => {
+        if (key === 'backgroundImage') {
+          document.body.style.backgroundImage = value;
+          document.body.style.backgroundSize = 'cover';
+          document.body.style.backgroundRepeat = 'no-repeat';
+          document.body.style.backgroundAttachment = 'fixed';
+          document.body.style.backgroundPosition = 'center';
+        } else {
+          document.documentElement.style.setProperty(key, value);
+        }
+      });
+
+      // Update body data-theme attribute
+      document.body.setAttribute('data-theme', selectedTheme);
+      
+      // Start theme-specific animations
+      animationManager.startAnimation(selectedTheme);
+      
+      // Use global theme system if available
+      if (typeof switchTheme === 'function') {
+        switchTheme(selectedTheme);
+      }
+      
+      // Play sound effect
+      if (typeof playGlobalSound === 'function') {
+        playGlobalSound('click');
+      }
+    }
+  });
+});
+
+// Handle window resize for responsive animations
+let resizeTimeout;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    animationManager.handleResize();
+  }, 250);
+});
+
+// Initialize animations when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Start with default theme animation
+  const initialTheme = document.body.getAttribute('data-theme') || 'galaxy';
+  animationManager.startAnimation(initialTheme);
+});
+
+// Pause animations when page is not visible (performance optimization)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    animationManager.stopAllAnimations();
+  } else {
+    const currentTheme = document.body.getAttribute('data-theme');
+    if (currentTheme) {
+      animationManager.startAnimation(currentTheme);
+    }
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const fadeElements = document.querySelectorAll('.fade-in');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  fadeElements.forEach(el => observer.observe(el));
+});
+</script>
+
+</body>
+</html>

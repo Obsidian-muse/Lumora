@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aura Comb — Cosmic Harmony</title>
+<link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg0:#000510; --bg1:#0a0f1a; --bg2:#1a1f2a; --glass:rgba(255,255,255,.08);
+    --ink:#e6f0ff; --muted:#b3c7ff; --accent:#7aa3ff;
+  }
+  html,body{height:100%}
+  body{
+    margin:0; overflow:hidden; color:var(--ink);
+    background:
+      radial-gradient(1400px 900px at 30% 20%, rgba(25,35,70,.4), transparent 70%),
+      radial-gradient(1200px 800px at 70% 80%, rgba(40,20,60,.3), transparent 60%),
+      radial-gradient(800px 600px at 50% 50%, rgba(15,25,45,.5), transparent 50%),
+      linear-gradient(135deg, var(--bg2), var(--bg1) 50%, var(--bg0));
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  }
+  #aura{position:fixed; inset:0; width:100vw; height:100vh; display:block;}
+
+  /* Enhanced nebula with starlight shimmer */
+  .pulse{
+    position:fixed; inset:0; pointer-events:none; mix-blend-mode:screen; 
+    opacity:.8; filter: blur(25px);
+    transition: all 2s ease-in-out;
+  }
+
+  /* Mood meter */
+  .mood-meter{
+    position:fixed; top:20px; left:20px; width:60px; height:200px;
+    background:rgba(0,5,15,.7); border:2px solid rgba(255,255,255,.15);
+    border-radius:30px; backdrop-filter:blur(10px);
+    display:flex; flex-direction:column; align-items:center; padding:10px;
+  }
+  .mood-fill{
+    width:30px; border-radius:15px; background:linear-gradient(to top, 
+      #4a90e2 0%, #7aa3ff 50%, #b3c7ff 100%);
+    transition: height 1s ease-out, box-shadow 1s ease-out;
+    margin-top:auto; position:relative;
+  }
+  .mood-label{
+    font-size:10px; color:var(--muted); margin-top:8px; text-align:center;
+    font-weight:300; letter-spacing:.5px;
+  }
+
+  /* Affirmation popup */
+  .affirmation{
+    position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+    font-family:'Inter', sans-serif; font-size:18px; font-weight:300;
+    color:var(--ink); text-align:center; padding:20px 30px;
+    background:linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    border:1px solid rgba(255,255,255,.2); border-radius:20px;
+    backdrop-filter:blur(15px); opacity:0; pointer-events:none;
+    transition: opacity 2s ease-in-out, transform 2s ease-in-out;
+    max-width:400px; line-height:1.6;
+  }
+  .affirmation.show{
+    opacity:1; transform:translate(-50%, -60%);
+  }
+
+  .msg{
+    position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+    font-family:"Gloria Hallelujah", ui-sans-serif; font-size:15px; letter-spacing:.3px;
+    color:var(--muted);
+    background:linear-gradient(to bottom right, rgba(255,255,255,.1), rgba(255,255,255,.05));
+    border:1px solid rgba(255,255,255,.15); border-radius:16px; padding:10px 16px;
+    backdrop-filter:blur(12px) saturate(150%);
+  }
+
+  .sound{
+    position:fixed; top:55px; right:20px; font-size:14px; cursor:pointer;
+    padding:10px 14px; border-radius:14px; background:var(--glass);
+    border:1px solid rgba(255,255,255,.15); user-select:none;
+    transition: all 0.3s ease;
+  }
+  .sound:hover{ background:rgba(255,255,255,.12); }
+  
+  .brand{ 
+    position:fixed; top:20px; right:20px; font-weight:500; opacity:.8; 
+    font-size:16px; letter-spacing:.5px;
+  }
+
+  /* Constellation overlay */
+  .constellation{
+    position:fixed; pointer-events:none; opacity:.6;
+    font-size:12px; color:var(--accent);
+  }
+
+  /* Back arrow button */
+  .back-icon {
+    width: 60px;
+    height: 60px;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .back-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-color);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    filter: brightness(0.8);
+  }
+  
+  .back-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px var(--accent-color);
+  }
+</style>
+</head>
+<body>
+  <a href="games.html" class="back-icon" title="Back to Games">
+    <img src="assets/arrow.jpeg" alt="Back Icon" loading="lazy">
+  </a>
+  
+  <canvas id="aura"></canvas>
+  <div class="pulse" id="pulse"></div>
+  
+  <!-- Mood Meter -->
+  <div class="mood-meter">
+    <div class="mood-fill" id="moodFill" style="height:20%"></div>
+    <div class="mood-label">Harmony</div>
+  </div>
+  
+  <!-- Affirmation Display -->
+  <div class="affirmation" id="affirmation"></div>
+  
+  <div class="sound" id="soundBtn">🎵 cosmic sounds</div>
+  <div class="brand">✨ Cosmic Harmony</div>
+  <div class="msg">Gently comb the cosmic aura — let the universe flow through your touch</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('aura');
+  const ctx = canvas.getContext('2d');
+  const pulse = document.getElementById('pulse');
+  const soundBtn = document.getElementById('soundBtn');
+  const moodFill = document.getElementById('moodFill');
+  const affirmationEl = document.getElementById('affirmation');
+
+  let W = canvas.width = innerWidth;
+  let H = canvas.height = innerHeight;
+  addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+  // ===== Enhanced Flow Field with Galaxy Movement =====
+  const seed = Math.random()*1000;
+  function hash(n){ return Math.sin(n*43758.5453)%1; }
+  function n2(x,y){
+    const i=Math.floor(x), j=Math.floor(y);
+    const f=x-i, g=y-j;
+    const a=hash(i + j*57 + seed), b=hash(i+1 + j*57 + seed);
+    const c=hash(i + (j+1)*57 + seed), d=hash(i+1 + (j+1)*57 + seed);
+    const u=f*f*(3-2*f), v=g*g*(3-2*g); 
+    return a*(1-u)*(1-v)+ b*u*(1-v) + c*(1-u)*v + d*u*v;
+  }
+  function field(x,y,t){
+    const s=0.001; 
+    const n1=n2((x+t*0.02)*s,(y-t*0.025)*s);
+    const n2v=n2((x-t*0.018)*s,(y+t*0.022)*s);
+    const a=(n1-n2v)*Math.PI*1.2; 
+    
+    const centerX = W*0.5, centerY = H*0.5;
+    const dx = x - centerX, dy = y - centerY;
+    const dist = Math.hypot(dx, dy);
+    const spiral = Math.atan2(dy, dx) + dist * 0.00005 + t * 0.00008; 
+    return {
+      x: Math.cos(a) * 0.5 + Math.cos(spiral) * 0.2, 
+      y: Math.sin(a) * 0.5 + Math.sin(spiral) * 0.2
+    };
+  }
+
+  // ===== Optimized Particles =====
+  const MAX = Math.floor(Math.min(1000, Math.max(500, (W*H)/3000))); 
+  const P = new Array(MAX);
+  function makeP(){
+    return {
+      x: Math.random()*W, y: Math.random()*H, 
+      vx: 0, vy: 0, 
+      px: 0, py: 0, 
+      w: Math.random()*1.2+0.4, 
+      l: Math.random()*300+250, 
+      h: 200+Math.random()*30,
+      shimmer: Math.random() * Math.PI * 2,
+      type: Math.random() < 0.05 ? 'star' : 'strand', 
+      smoothVx: 0, smoothVy: 0 
+    };
+  }
+  for(let i=0;i<MAX;i++) P[i]=makeP();
+
+  // ===== Optimized Shooting Stars =====
+  const shootingStars = [];
+  function createShootingStar(){
+    if(Math.random() < 0.001 && shootingStars.length < 2){
+      shootingStars.push({
+        x: Math.random() * W,
+        y: Math.random() * H * 0.3,
+        vx: (Math.random() - 0.5) * 6,
+        vy: Math.random() * 2 + 1,
+        life: 1,
+        trail: []
+      });
+    }
+  }
+
+  // ===== Simplified Constellations =====
+  const constellations = [];
+  function createConstellation(){
+    if(constellations.length < 3){
+      const stars = [];
+      const centerX = Math.random() * W;
+      const centerY = Math.random() * H;
+      const numStars = 3 + Math.floor(Math.random() * 3);
+      
+      for(let i = 0; i < numStars; i++){
+        stars.push({
+          x: centerX + (Math.random() - 0.5) * 150,
+          y: centerY + (Math.random() - 0.5) * 150,
+          brightness: 0.3 + Math.random() * 0.4
+        });
+      }
+      
+      constellations.push({
+        stars,
+        drift: { x: (Math.random() - 0.5) * 0.08, y: (Math.random() - 0.5) * 0.08 },
+        opacity: 0.6
+      });
+    }
+  }
+  
+  // Initialize fewer constellations
+  for(let i = 0; i < 2; i++) createConstellation();
+
+  // ===== Input (Enhanced Comb) =====
+  let down=false, px=0, py=0, vx=0, vy=0, svx=0, svy=0;
+  let smoothPx=0, smoothPy=0; 
+  function evt(e){ return e.touches? e.touches[0] : e; }
+  function onDown(e){ 
+    const p=evt(e); down=true; px=p.clientX; py=p.clientY; 
+    smoothPx=px; smoothPy=py; vx=vy=0; 
+    e.preventDefault(); startAudio(); 
+  }
+  function onMove(e){ 
+    const p=evt(e); const nx=p.clientX, ny=p.clientY; 
+    if(down){ vx = nx-px; vy = ny-py; } 
+    px=nx; py=ny; 
+    smoothPx += (px - smoothPx) * 0.15;
+    smoothPy += (py - smoothPy) * 0.15;
+  }
+  function onUp(){ down=false; }
+  addEventListener('mousedown', onDown); addEventListener('mousemove', onMove); addEventListener('mouseup', onUp);
+  addEventListener('touchstart', onDown,{passive:false}); addEventListener('touchmove', onMove,{passive:false}); addEventListener('touchend', onUp);
+
+  // ===== Enhanced Calm Metric with Affirmations =====
+  let calm=30, lastAffirmation=0;
+  const affirmations = [
+    "You are creating beautiful harmony in the cosmos",
+    "Your gentle touch brings peace to the universe",
+    "Feel the cosmic energy flowing through you",
+    "You are one with the starlight",
+    "Breathe deeply and let the galaxy embrace you",
+    "Your calm presence illuminates the darkness",
+    "The universe responds to your peaceful energy"
+  ];
+  
+  function updateCalm(dt){
+    const a=0.12; svx = svx*(1-a)+vx*a; svy = svy*(1-a)+vy*a; 
+    const jitter = Math.hypot(vx-svx, vy-svy);
+    const speed = Math.min(40, Math.hypot(vx,vy)); 
+    const steadiness = 1 - Math.min(1, jitter/12); 
+    const flow = down ? Math.min(1, speed/25) : -0.06; 
+    const target = Math.max(0, Math.min(1, steadiness*0.85 + flow*0.35));
+    calm += (target*100 - calm) * (dt*0.001); 
+    calm = Math.max(0, Math.min(100, calm));
+    
+    // Update mood meter
+    moodFill.style.height = `${Math.max(10, calm)}%`;
+    moodFill.style.boxShadow = `0 0 ${calm/5}px rgba(122,163,255,${calm/200})`;
+    
+    // Show affirmations
+    if(calm > 70 && Date.now() - lastAffirmation > 15000){
+      showAffirmation();
+      lastAffirmation = Date.now();
+    }
+  }
+  
+  function showAffirmation(){
+    const msg = affirmations[Math.floor(Math.random() * affirmations.length)];
+    affirmationEl.textContent = msg;
+    affirmationEl.classList.add('show');
+    setTimeout(() => affirmationEl.classList.remove('show'), 4000);
+  }
+
+  // ===== Enhanced Audio with Evolution =====
+  const audio = new Audio("https://cdn.pixabay.com/download/audio/2022/10/19/audio_4a641357e3.mp3?filename=deep-space-drift-123056.mp3");
+  audio.loop = true; audio.volume = 0.12; let audioStarted=false;
+  
+  function startAudio(){ 
+    if(!audioStarted){ 
+      audioStarted=true; 
+      audio.play().catch(()=>{}); 
+    } 
+  }
+  
+  function updateAudio(){
+    if(audioStarted && !audio.paused){
+      const baseVolume = 0.12;
+      const calmFactor = calm / 100;
+      audio.volume = baseVolume + (calmFactor * 0.08);
+      audio.playbackRate = 0.95 + (calmFactor * 0.1); 
+    }
+  }
+  
+  soundBtn.addEventListener('click',()=>{ 
+    if(audioStarted && !audio.paused){ 
+      audio.pause(); 
+      soundBtn.textContent='🔇 silence'; 
+    } else { 
+      startAudio(); 
+      audio.play(); 
+      soundBtn.textContent='🎵 cosmic sounds'; 
+    } 
+  });
+
+  // ===== Enhanced Render with Galaxy Effects =====
+  ctx.lineCap='round';
+  let t0 = performance.now();
+  let baseHue = 220; 
+
+  function render(dt, t){
+    const fade = 0.05 + (1-calm/100)*0.03; 
+    ctx.globalCompositeOperation='source-over';
+    ctx.fillStyle = `rgba(0,5,16,${fade})`;
+    ctx.fillRect(0,0,W,H);
+
+    // Optimized shooting stars (render every other frame)
+    if(Math.floor(t/16) % 2 === 0) {
+      createShootingStar();
+      for(let i = shootingStars.length - 1; i >= 0; i--){
+        const star = shootingStars[i];
+        star.trail.push({x: star.x, y: star.y, life: star.life});
+        if(star.trail.length > 10) star.trail.shift(); 
+        
+        star.x += star.vx;
+        star.y += star.vy;
+        star.life -= 0.015; 
+        
+        if(star.life <= 0 || star.x < 0 || star.x > W || star.y > H){
+          shootingStars.splice(i, 1);
+          continue;
+        }
+        
+        ctx.globalCompositeOperation = 'lighter';
+        for(let j = 0; j < star.trail.length; j++){
+          const point = star.trail[j];
+          const alpha = (point.life * (j / star.trail.length)) * 0.6;
+          ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    // Optimized constellations (render every 3rd frame)
+    if(Math.floor(t/16) % 3 === 0) {
+      for(let constellation of constellations){
+        for(let star of constellation.stars){
+          star.x += constellation.drift.x;
+          star.y += constellation.drift.y;
+          
+          if(star.x < 0) star.x = W;
+          if(star.x > W) star.x = 0;
+          if(star.y < 0) star.y = H;
+          if(star.y > H) star.y = 0;
+          
+          ctx.globalCompositeOperation = 'lighter';
+          const twinkle = Math.sin(t * 0.002 + star.x * 0.008) * 0.2 + 0.8; 
+          ctx.fillStyle = `rgba(179,199,255,${star.brightness * twinkle * 0.5})`;
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, 1, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    const R = 160; 
+    const sMult = 0.7; 
+
+    ctx.globalCompositeOperation='lighter';
+    for(let i=0;i<P.length;i++){
+      const p=P[i];
+      const v = field(p.x,p.y,t*0.0002); 
+
+      if(down){
+        const dx=smoothPx-p.x, dy=smoothPy-p.y; const d=Math.hypot(dx,dy); 
+        if(d<R){
+          const f=(R-d)/R; 
+          const sp = Math.hypot(svx,svy)+0.0001; const ux=svx/sp, uy=svy/sp; 
+          const tx = -uy, ty = ux;
+          
+          const forceX = (ux*1.0 + tx*0.3)*sMult*f; 
+          const forceY = (uy*1.0 + ty*0.3)*sMult*f;
+          p.vx += forceX * 0.25; 
+          p.vy += forceY * 0.25;
+          
+          p.vx += dx*0.0002*sMult*f; p.vy += dy*0.0002*sMult*f;
+        }
+      }
+
+      p.vx += v.x*0.12; p.vy += v.y*0.12;
+
+      // Simplified velocity smoothing
+      p.smoothVx += (p.vx - p.smoothVx) * 0.1;
+      p.smoothVy += (p.vy - p.smoothVy) * 0.1;
+
+      const damp = 0.91 + (calm/100) * 0.05;
+      p.vx *= damp; p.vy *= damp;
+
+      p.px = p.x; p.py = p.y; 
+      p.x += p.smoothVx; p.y += p.smoothVy; 
+      
+      if(p.x < -30) p.x = W + 30; if(p.x > W + 30) p.x = -30;
+      if(p.y < -30) p.y = H + 30; if(p.y > H + 30) p.y = -30;
+
+      p.l -= 0.15; 
+      if(p.l<0){ P[i]=makeP(); continue; }
+      p.w += (0.7 + calm*0.01 - p.w)*0.03; 
+
+      // Simplified color system
+      const calmFactor = calm / 100;
+      let hue, alpha;
+      
+      if(p.type === 'star'){
+        p.shimmer += 0.04; 
+        const shimmerIntensity = Math.sin(p.shimmer) * 0.2 + 0.8; 
+        hue = baseHue + Math.sin(t*0.00006 + i*0.01) * 10; 
+        alpha = 0.25 + calmFactor * 0.2 + shimmerIntensity * 0.1;
+        
+        ctx.shadowBlur = 4 + shimmerIntensity * 2;
+        ctx.shadowColor = `hsla(${hue}, 75%, 65%, 0.4)`;
+      } else {
+        hue = baseHue + Math.sin(t*0.00008 + i*0.006) * 15 + calmFactor * 10;
+        alpha = 0.035 + calmFactor * 0.025;
+        
+        ctx.shadowBlur = 1 + calmFactor * 1.5;
+        ctx.shadowColor = `hsla(${hue}, 80%, 50%, 0.2)`;
+      }
+
+      ctx.strokeStyle = `hsla(${hue}, 80%, 55%, ${alpha})`;
+      ctx.lineWidth = p.w;
+      
+      ctx.beginPath(); 
+      ctx.moveTo(p.px, p.py); 
+      ctx.lineTo(p.x, p.y); 
+      ctx.stroke();
+      
+      ctx.shadowBlur = 0;
+    }
+
+    // Simplified nebula pulse
+    const k = calm/100;
+    const hue1 = baseHue + k * 15; 
+    const hue2 = baseHue + 20 + k * 10;
+    
+    pulse.style.background = `
+      radial-gradient(500px 250px at 30% 30%, hsla(${hue1},85%,60%,${0.15*k}), transparent 60%),
+      radial-gradient(600px 300px at 70% 70%, hsla(${hue2},80%,55%,${0.1*k}), transparent 55%)
+    `;
+    
+    updateAudio();
+  }
+
+  // ===== Main Loop =====
+  function loop(now){
+    const dt = now - t0; t0 = now;
+    updateCalm(dt);
+    render(dt, now);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+<script src="script.js"></script>
+</body>
+</html>

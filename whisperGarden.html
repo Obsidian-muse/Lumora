@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whisper Garden</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <style>
+    body {
+  margin: 0;
+  font-family: 'Gloria Hallelujah', cursive;
+
+  /* Background image with overlay */
+  background: 
+    linear-gradient(rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.5)),
+    url("assets/dreamy.jpeg") no-repeat center center fixed;
+  background-size: cover;
+
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #fff;
+  padding: 20px;
+}
+
+
+
+    .back-icon {
+      width: 60px;
+      height: 60px;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .back-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      padding: 0;
+      background: none;
+      border: none;
+      backdrop-filter: none;
+    }
+
+    .back-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 182, 255, 0.6);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 15px 30px;
+      display: inline-block;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    /* Floating animation */
+@keyframes floaty {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+.journal-container {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  /* Glow */
+  box-shadow: 0 0 20px rgba(255, 182, 255, 0.4),
+              0 0 40px rgba(174, 216, 255, 0.2);
+
+  /* Floating */
+  animation: floaty 6s ease-in-out infinite;
+}
+
+
+    .mood-selector {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .mood-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Gloria Hallelujah', cursive;
+      font-size: 1rem;
+    }
+
+    .mood-btn:hover, .mood-btn.selected {
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(1.05);
+    }
+
+    .journal-input {
+      width: 100%;
+      height: 120px;
+      padding: 20px;
+      border: none;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      font-family: 'Gloria Hallelujah', cursive;
+      font-size: 16px;
+      resize: vertical;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+
+    .journal-input::placeholder {
+      color: #666;
+    }
+
+    .plant-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+      color: #fff;
+      font-family: 'Gloria Hallelujah', cursive;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .plant-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    
+.garden {
+  max-width: 1000px;
+  margin: 0 auto;
+  min-height: 400px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+
+  /* Glow */
+  box-shadow: 0 0 25px rgba(174, 216, 255, 0.4),
+              0 0 50px rgba(200, 150, 255, 0.25);
+
+  /* Floating */
+  animation: floaty 8s ease-in-out infinite;
+}
+
+    .garden-title {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    .flower {
+      position: absolute;
+      font-size: 3rem;
+      animation: bloom 2s ease-out, glow 3s ease-in-out infinite alternate;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .flower:hover {
+      transform: scale(1.2);
+    }
+
+    @keyframes bloom {
+      0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.3) rotate(180deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes glow {
+      0% {
+        filter: drop-shadow(0 0 5px currentColor);
+        text-shadow: 0 0 10px currentColor;
+      }
+      100% {
+        filter: drop-shadow(0 0 20px currentColor);
+        text-shadow: 0 0 25px currentColor;
+      }
+    }
+
+    .flower-tooltip {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .flower:hover .flower-tooltip {
+      opacity: 1;
+    }
+
+    .empty-garden {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.2rem;
+      margin-top: 100px;
+    }
+
+    .sparkle {
+      position: absolute;
+      color: #ffd700;
+      font-size: 1rem;
+      animation: sparkle 1.5s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes sparkle {
+      0% {
+        opacity: 1;
+        transform: scale(0.5) translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.5) translateY(-30px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mood-selector {
+        gap: 10px;
+      }
+      .mood-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+      .title {
+        font-size: 2rem;
+      }
+    }
+
+    /* Sparkle particles */
+.sparkle-particle {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.7;
+  pointer-events: none;
+  animation: drift 12s linear infinite;
+}
+
+@keyframes drift {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.8);
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-200px) translateX(50px) scale(1.2);
+  }
+  100% {
+    transform: translateY(-400px) translateX(-50px) scale(0.6);
+    opacity: 0;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <a href="games.html" class="back-icon" title="Back to Games">
+    <img src="assets/arrow.jpeg" alt="Back Icon" loading="lazy">
+  </a>
+
+  <div class="header">
+    <div class="title" data-translate="whisper-garden">🌸 Whisper Garden 🌸</div>
+    <div class="subtitle" data-translate="plant-emotions">Plant your feelings and watch them bloom into beautiful flowers</div>
+  </div>
+
+  <div class="journal-container">
+    <div class="mood-selector">
+      <button class="mood-btn" data-mood="anger" data-color="#ff4757" data-translate="anger">😠 Anger</button>
+      <button class="mood-btn" data-mood="sadness" data-color="#3742fa" data-translate="sadness">😢 Sadness</button>
+      <button class="mood-btn" data-mood="loneliness" data-color="#747d8c" data-translate="loneliness">😔 Loneliness</button>
+      <button class="mood-btn" data-mood="joy" data-color="#ffa502" data-translate="joy">😊 Joy</button>
+      <button class="mood-btn" data-mood="love" data-color="#ff6b9d" data-translate="love">💖 Love</button>
+      <button class="mood-btn" data-mood="anxiety" data-color="#a55eea" data-translate="anxiety">😰 Anxiety</button>
+    </div>
+
+    <textarea 
+      class="journal-input" 
+      id="journalInput"
+      placeholder="Share what's on your mind... Your words will bloom into a beautiful flower in your garden." 
+      data-translate="express-emotions"
+    ></textarea>
+
+    <button class="plant-btn" onclick="plantFeeling()" data-translate="plant-feeling">
+      🌱 Plant Your Feeling
+    </button>
+  </div>
+
+  <div class="garden" id="garden">
+    <div class="garden-title" data-translate="your-emotional-garden">Your Emotional Garden</div>
+    <div class="empty-garden" id="emptyMessage" data-translate="empty-garden">Your garden is waiting for your first feeling to bloom...</div>
+  </div>
+
+  <script>
+    const MOOD_FLOWERS = {
+      anger: { emoji: '🌹', color: '#ff4757' },
+      sadness: { emoji: '🪷', color: '#3742fa' },
+      loneliness: { emoji: '🌸', color: '#747d8c' },
+      joy: { emoji: '🌻', color: '#ffa502' },
+      love: { emoji: '💐', color: '#ff6b9d' },
+      anxiety: { emoji: '🌷', color: '#a55eea' }
+    };
+
+    let selectedMood = null;
+    let flowers = [];
+
+    function getSafePosition(garden, existingFlowers) {
+      const gardenWidth = garden.offsetWidth;
+      const gardenHeight = garden.offsetHeight;
+      const safeMargin = 80;
+      const minDistance = 100; // distance to keep between flowers
+
+      let tries = 0;
+      while (tries < 50) { // max attempts
+        const posX = Math.random() * (gardenWidth - safeMargin * 2) + safeMargin;
+        const posY = Math.random() * (gardenHeight - safeMargin * 2) + safeMargin;
+
+        let tooClose = false;
+        for (let f of existingFlowers) {
+          const dx = parseFloat(f.element.style.left) - posX;
+          const dy = parseFloat(f.element.style.top) - posY;
+          if (Math.sqrt(dx * dx + dy * dy) < minDistance) {
+            tooClose = true;
+            break;
+          }
+        }
+
+        if (!tooClose) return { x: posX, y: posY };
+        tries++;
+      }
+
+      // fallback if no space found
+      return { x: gardenWidth / 2, y: gardenHeight / 2 };
+    }
+
+    // Mood selection
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedMood = btn.dataset.mood;
+      });
+    });
+
+    function plantFeeling() {
+      const journalText = document.getElementById('journalInput').value.trim();
+      
+      if (!journalText) {
+        alert('Please share your feelings first...');
+        return;
+      }
+
+      if (!selectedMood) {
+        alert('Please select a mood first...');
+        return;
+      }
+
+      // Create flower
+      createFlower(selectedMood, journalText);
+      
+      // Clear input
+      document.getElementById('journalInput').value = '';
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      selectedMood = null;
+
+      // Hide empty message
+      document.getElementById('emptyMessage').style.display = 'none';
+    }
+
+    function createFlower(mood, text) {
+      const garden = document.getElementById('garden');
+      const flower = document.createElement('div');
+      const flowerData = MOOD_FLOWERS[mood];
+      const position = getSafePosition(garden, flowers);
+      
+      flower.className = 'flower';
+      flower.innerHTML = `
+        ${flowerData.emoji}
+        <div class="flower-tooltip">${text.substring(0, 50)}${text.length > 50 ? '...' : ''}</div>
+      `;
+      
+      flower.style.color = flowerData.color;
+      flower.style.left = position.x + 'px';
+      flower.style.top = position.y + 'px';
+      
+      // Add click event to show full text
+      flower.addEventListener('click', () => {
+        alert(`💭 Your ${mood} feeling:\n\n"${text}"\n\nPlanted: ${new Date().toLocaleDateString()}`);
+      });
+
+      garden.appendChild(flower);
+      
+      // Add sparkle effect
+      createSparkles(flower, flowerData.color);
+      
+      // Store flower data
+      flowers.push({
+        mood: mood,
+        text: text,
+        date: new Date(),
+        element: flower
+      });
+
+      // Save to localStorage
+      saveGarden();
+    }
+
+    function createSparkles(element, color) {
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          const sparkle = document.createElement('div');
+          sparkle.className = 'sparkle';
+          sparkle.textContent = '✨';
+          sparkle.style.color = color;
+          sparkle.style.left = Math.random() * 60 + 'px';
+          sparkle.style.top = Math.random() * 60 + 'px';
+          
+          element.appendChild(sparkle);
+          
+          setTimeout(() => {
+            if (sparkle.parentNode) {
+              sparkle.parentNode.removeChild(sparkle);
+            }
+          }, 1500);
+        }, i * 200);
+      }
+    }
+
+    function saveGarden() {
+      const gardenData = flowers.map(f => ({
+        mood: f.mood,
+        text: f.text,
+        date: f.date,
+        position: {
+          left: f.element.style.left,
+          top: f.element.style.top
+        }
+      }));
+      localStorage.setItem('whisperGarden', JSON.stringify(gardenData));
+    }
+
+    function loadGarden() {
+      const saved = localStorage.getItem('whisperGarden');
+      if (saved) {
+        const gardenData = JSON.parse(saved);
+        gardenData.forEach(flowerData => {
+          const garden = document.getElementById('garden');
+          const flower = document.createElement('div');
+          const flowerInfo = MOOD_FLOWERS[flowerData.mood];
+          
+          flower.className = 'flower';
+          flower.innerHTML = `
+            ${flowerInfo.emoji}
+            <div class="flower-tooltip">${flowerData.text.substring(0, 50)}${flowerData.text.length > 50 ? '...' : ''}</div>
+          `;
+          
+          flower.style.color = flowerInfo.color;
+          flower.style.left = flowerData.position.left;
+          flower.style.top = flowerData.position.top;
+          
+          flower.addEventListener('click', () => {
+            alert(`💭 Your ${flowerData.mood} feeling:\n\n"${flowerData.text}"\n\nPlanted: ${new Date(flowerData.date).toLocaleDateString()}`);
+          });
+
+          garden.appendChild(flower);
+          
+          flowers.push({
+            mood: flowerData.mood,
+            text: flowerData.text,
+            date: new Date(flowerData.date),
+            element: flower
+          });
+        });
+
+        if (flowers.length > 0) {
+          document.getElementById('emptyMessage').style.display = 'none';
+        }
+      }
+    }
+
+    // Load garden on page load
+    window.addEventListener('load', loadGarden);
+
+    // Allow Enter key to plant
+    document.getElementById('journalInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        plantFeeling();
+      }
+    });
+  
+  // Generate floating sparkles
+  function createBackgroundSparkles() {
+    for (let i = 0; i < 25; i++) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle-particle';
+      sparkle.style.left = Math.random() * window.innerWidth + 'px';
+      sparkle.style.top = Math.random() * window.innerHeight + 'px';
+      sparkle.style.animationDuration = (10 + Math.random() * 10) + 's';
+      sparkle.style.background = `hsl(${Math.random() * 360}, 100%, 80%)`; // pastel sparkle colors
+      document.body.appendChild(sparkle);
+
+      // Remove and respawn after animation
+      sparkle.addEventListener('animationend', () => {
+        sparkle.remove();
+        createBackgroundSparkles(); // respawn continuously
+      });
+    }
+  }
+
+  window.addEventListener('load', createBackgroundSparkles);
+</script>
+
+</body>
+</html>

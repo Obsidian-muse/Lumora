@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Star Stitcher — Emotional Constellations</title>
+<style>
+  body{
+    margin:0; overflow:hidden; background:#000208; color:#e6f0ff;
+    font-family: Arial, sans-serif;
+  }
+  
+  #starCanvas{position:fixed; inset:0; width:100vw; height:100vh; cursor:crosshair;}
+  
+  .prompt-card{
+    position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+    max-width:500px; padding:30px; text-align:center;
+    background:rgba(255,255,255,.1); border:2px solid rgba(255,255,255,.2);
+    border-radius:25px; backdrop-filter:blur(20px); z-index:10;
+  }
+  
+  .prompt-card.hidden{opacity:0; pointer-events:none;}
+  
+  .prompt-title{font-size:2rem; color:#7aa3ff; margin:0 0 15px 0;}
+  .prompt-text{font-size:1.3rem; margin:0 0 25px 0; font-style:italic;}
+  
+  .start-btn{
+    padding:12px 30px; font-size:1.1rem; background:#7aa3ff;
+    border:none; border-radius:15px; color:white; cursor:pointer;
+  }
+  
+  .progress-bar{
+    position:fixed; top:30px; left:50%; transform:translateX(-50%);
+    width:300px; height:8px; background:rgba(255,255,255,.1);
+    border-radius:4px; opacity:0;
+  }
+  
+  .progress-fill{
+    height:100%; background:#7aa3ff; width:0%; border-radius:4px;
+    transition:width 1s ease;
+  }
+  
+  .constellation-info{
+    position:fixed; top:60px; left:30px; background:rgba(0,2,8,.8);
+    padding:15px 20px; border-radius:15px; max-width:250px; opacity:0;
+  }
+  
+  .completion-modal{
+    position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+    max-width:600px; padding:40px; text-align:center;
+    background:rgba(255,255,255,.15); border:2px solid rgba(255,255,255,.3);
+    border-radius:30px; backdrop-filter:blur(25px); z-index:20;
+    opacity:0; pointer-events:none;
+  }
+  
+  .completion-modal.show{opacity:1; pointer-events:auto;}
+  
+  .completion-title{font-size:2.5rem; color:#ffb366; margin:0 0 20px 0;}
+  .completion-constellation{font-size:1.8rem; color:#7aa3ff; margin:0 0 15px 0;}
+  .completion-message{font-size:1.2rem; margin:0 0 30px 0;}
+  
+  .modal-buttons{display:flex; gap:15px; justify-content:center;}
+  .modal-btn{
+    padding:12px 25px; border:2px solid; border-radius:12px; cursor:pointer;
+    background:#7aa3ff; border-color:#7aa3ff; color:white;
+  }
+  
+  .controls{
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+    display:flex; gap:15px; opacity:0;
+  }
+  
+  .control-btn{
+    padding:12px 20px; background:rgba(0,2,8,.8);
+    border:1px solid rgba(255,255,255,.2); border-radius:12px;
+    color:#e6f0ff; cursor:pointer;
+  }
+
+  /* Back arrow button */
+  .back-icon {
+    width: 60px;
+    height: 60px;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1001;
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+  }
+
+  .back-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(122, 163, 255, 0.8);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    filter: brightness(0.8);
+  }
+
+  .back-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(122, 163, 255, 0.8);
+  }
+</style>
+</head>
+<body>
+  <a href="games.html" class="back-icon" title="Back to Games">
+    <img src="assets/arrow.jpeg" alt="Back Icon" loading="lazy">
+  </a>
+
+  <canvas id="starCanvas"></canvas>
+  
+  <div class="prompt-card" id="promptCard">
+    <h2 class="prompt-title">⭐ Star Stitcher</h2>
+    <p class="prompt-text" id="promptText">Your happiest memory</p>
+    <button class="start-btn" onclick="startGame()">Begin Stitching</button>
+  </div>
+  
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  
+  <div class="constellation-info" id="constellationInfo">
+    <div style="font-size:1.1rem; color:#7aa3ff; margin-bottom:5px;" id="constellationName">The Memory Keeper</div>
+    <div style="font-size:0.9rem; color:#b3c7ff;" id="constellationDesc">A gentle cluster forming...</div>
+  </div>
+  
+  <div class="completion-modal" id="completionModal">
+    <h2 class="completion-title">Constellation Complete!</h2>
+    <div class="completion-constellation" id="completedName">The Memory Keeper</div>
+    <p class="completion-message" id="completedMessage">
+      Your constellation shines with the warmth of cherished moments!
+    </p>
+    <div class="modal-buttons">
+      <button class="modal-btn" onclick="newGame()">Create Another</button>
+      <button class="modal-btn" onclick="goHome()">Back to Games</button>
+    </div>
+  </div>
+  
+  <div class="controls" id="gameControls">
+    <button class="control-btn" onclick="toggleMusic()">🎵 Music</button>
+    <button class="control-btn" onclick="resetGame()">↻ Reset</button>
+    <button class="control-btn" onclick="goHome()">🏠 Home</button>
+  </div>
+
+<script>
+const canvas = document.getElementById('starCanvas');
+const ctx = canvas.getContext('2d');
+
+let W = canvas.width = innerWidth;
+let H = canvas.height = innerHeight;
+window.addEventListener('resize', () => { 
+  W = canvas.width = innerWidth; 
+  H = canvas.height = innerHeight; 
+});
+
+// Game variables
+let gameState = 'prompt';
+let stars = [];
+let connections = [];
+let backgroundStars = [];
+let isDrawing = false;
+let lastStar = null;
+let currentPrompt = null;
+let audio = null;
+
+const prompts = [
+  {
+    text: "Your happiest memory",
+    name: "The Memory Keeper",
+    desc: "A gentle cluster forming...",
+    message: "Your constellation shines with the warmth of cherished moments!",
+    color: [255, 200, 100]
+  },
+  {
+    text: "A place you feel safe",
+    name: "The Sanctuary",
+    desc: "Stars gathering like protective walls...",
+    message: "Your sanctuary constellation wraps around you like a cosmic embrace!",
+    color: [100, 150, 255]
+  },
+  {
+    text: "Something that makes you smile",
+    name: "The Joy Bringer",
+    desc: "Twinkling lights dancing with delight...",
+    message: "Your joy constellation sparkles with infectious happiness!",
+    color: [200, 100, 255]
+  }
+];
+
+// Initialize background stars
+function initBackground() {
+  backgroundStars = [];
+  for(let i = 0; i < 200; i++) {
+    backgroundStars.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      size: Math.random() * 2 + 0.5,
+      twinkle: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+// Generate constellation stars
+function generateStars() {
+  stars = [];
+  connections = [];
+  const count = 7;
+  const centerX = W * 0.5;
+  const centerY = H * 0.5;
+  const radius = Math.min(W, H) * 0.2;
+  
+  for(let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2;
+    stars.push({
+      x: centerX + Math.cos(angle) * radius + (Math.random() - 0.5) * 100,
+      y: centerY + Math.sin(angle) * radius + (Math.random() - 0.5) * 100,
+      size: 10,
+      pulse: Math.random() * Math.PI * 2,
+      id: i
+    });
+  }
+}
+
+// Find nearest star
+function findStar(x, y) {
+  for(let star of stars) {
+    const dist = Math.hypot(x - star.x, y - star.y);
+    if(dist < 40) return star;
+  }
+  return null;
+}
+
+// Connect two stars
+function connectStars(star1, star2) {
+  const exists = connections.some(c => 
+    (c.from === star1.id && c.to === star2.id) ||
+    (c.from === star2.id && c.to === star1.id)
+  );
+  
+  if(!exists) {
+    connections.push({from: star1.id, to: star2.id, progress: 0});
+    updateProgress();
+    
+    if(connections.length >= stars.length - 1) {
+      setTimeout(completeGame, 1000);
+    }
+  }
+}
+
+// Update progress bar
+function updateProgress() {
+  const progress = (connections.length / (stars.length - 1)) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+}
+
+// Mouse events
+canvas.addEventListener('mousedown', (e) => {
+  if(gameState !== 'playing') return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const star = findStar(x, y);
+  if(star) {
+    isDrawing = true;
+    lastStar = star;
+  }
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  if(!isDrawing || gameState !== 'playing') return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const star = findStar(x, y);
+  if(star && star !== lastStar) {
+    connectStars(lastStar, star);
+    lastStar = star;
+  }
+});
+
+canvas.addEventListener('mouseup', () => {
+  isDrawing = false;
+  lastStar = null;
+});
+
+// Touch events
+canvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  canvas.dispatchEvent(new MouseEvent('mousedown', {
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  }));
+});
+
+canvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  canvas.dispatchEvent(new MouseEvent('mousemove', {
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  }));
+});
+
+canvas.addEventListener('touchend', (e) => {
+  e.preventDefault();
+  canvas.dispatchEvent(new MouseEvent('mouseup', {}));
+});
+
+// Render function
+function render() {
+  ctx.clearRect(0, 0, W, H);
+  
+  // Background stars
+  for(let star of backgroundStars) {
+    star.twinkle += 0.02;
+    const alpha = 0.3 + Math.sin(star.twinkle) * 0.2;
+    ctx.fillStyle = `rgba(179,199,255,${alpha})`;
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
+  if(gameState === 'playing' || gameState === 'complete') {
+    // Connections
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    
+    for(let conn of connections) {
+      const star1 = stars[conn.from];
+      const star2 = stars[conn.to];
+      conn.progress = Math.min(1, conn.progress + 0.03);
+      
+      const [r, g, b] = currentPrompt.color;
+      ctx.strokeStyle = `rgba(${r},${g},${b},${conn.progress * 0.8})`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = `rgba(${r},${g},${b},0.6)`;
+      
+      ctx.beginPath();
+      ctx.moveTo(star1.x, star1.y);
+      ctx.lineTo(star2.x, star2.y);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+    
+    // Stars
+    for(let star of stars) {
+      star.pulse += 0.05;
+      const pulseSize = star.size * (0.8 + Math.sin(star.pulse) * 0.2);
+      const [r, g, b] = currentPrompt.color;
+      
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = `rgba(${r},${g},${b},0.8)`;
+      ctx.fillStyle = `rgba(${r},${g},${b},0.9)`;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, pulseSize, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+  
+  requestAnimationFrame(render);
+}
+
+// Game functions
+function startGame() {
+  gameState = 'playing';
+  currentPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+  
+  document.getElementById('promptCard').classList.add('hidden');
+  document.getElementById('progressBar').style.opacity = '1';
+  document.getElementById('constellationInfo').style.opacity = '1';
+  document.getElementById('gameControls').style.opacity = '1';
+  
+  document.getElementById('constellationName').textContent = currentPrompt.name;
+  document.getElementById('constellationDesc').textContent = currentPrompt.desc;
+  
+  generateStars();
+  playMusic();
+}
+
+function completeGame() {
+  gameState = 'complete';
+  
+  document.getElementById('completedName').textContent = currentPrompt.name;
+  document.getElementById('completedMessage').textContent = currentPrompt.message;
+  document.getElementById('completionModal').classList.add('show');
+  
+  document.getElementById('progressBar').style.opacity = '0';
+  document.getElementById('constellationInfo').style.opacity = '0';
+  document.getElementById('gameControls').style.opacity = '0';
+}
+
+function newGame() {
+  document.getElementById('completionModal').classList.remove('show');
+  currentPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+  document.getElementById('promptText').textContent = currentPrompt.text;
+  document.getElementById('promptCard').classList.remove('hidden');
+  gameState = 'prompt';
+  if(audio) audio.pause();
+}
+
+function resetGame() {
+  if(gameState === 'playing') {
+    generateStars();
+    updateProgress();
+  }
+}
+
+function toggleMusic() {
+  if(audio) {
+    if(audio.paused) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  }
+}
+
+function playMusic() {
+  if(audio) audio.pause();
+  audio = new Audio("https://cdn.pixabay.com/download/audio/2022/10/19/audio_4a641357e3.mp3?filename=deep-space-drift-123056.mp3");
+  audio.loop = true;
+  audio.volume = 0.2;
+  audio.play().catch(() => {});
+}
+
+function goHome() {
+  window.location.href = 'games.html';
+}
+
+function openSettings() {
+  // Add your settings functionality here
+}
+
+// Initialize
+function init() {
+  initBackground();
+  currentPrompt = prompts[0];
+  document.getElementById('promptText').textContent = currentPrompt.text;
+  render();
+}
+
+init();
+</script>
+<script src="script.js"></script>
+</body>
+</html>

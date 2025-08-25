@@ -1,0 +1,814 @@
+@import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+
+:root {
+  --background-image: url('assets/galaxy.jpg'); /* default theme */
+  --font-family: 'Gloria Hallelujah', cursive, sans-serif;
+  --accent-color: #f7c4ff;
+  --bg-glow: rgba(255, 182, 193, 0.4);
+  --log-border: rgba(255, 255, 255, 0.2);
+}
+
+
+body {
+  background: var(--background-image) no-repeat center center fixed;
+  background-size: cover;
+  font-family: var(--font-family);
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+
+
+.mood-btn img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;         /* Crop inside frame if it's not square */
+  border-radius: 50%;        /* Make it circular */
+  border: 2px solid transparent;
+  box-sizing: border-box;    /* Fixes border affecting size */
+  transition: transform 0.2s ease, border 0.2s ease;
+  display: block;
+}
+
+.mood-btn.selected img {
+  transform: scale(1.2); /* slightly enlarged */
+  border: 3px solid #7f9cff;
+  box-shadow: 0 0 15px rgba(130, 150, 255, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1.2);
+  }
+}
+
+.mood-btn.selected img {
+  animation: pop 0.25s ease;
+  border: 3px solid #7f9cff;
+  box-shadow: 0 0 15px rgba(130, 150, 255, 0.6);
+}
+
+
+
+textarea {
+  width: 90%;
+  max-width: 500px;
+  height: 100px;
+  padding: 14px 18px;
+  font-size: 20px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 0 10px rgba(180, 150, 255, 0.2),
+    0 0 25px rgba(180, 150, 255, 0.15);
+   font-family: 'Gloria Hallelujah', cursive;
+  transition: box-shadow 0.3s ease;
+  resize: none;
+}
+
+textarea::placeholder {
+  font-family: 'Gloria Hallelujah', cursive;
+}
+
+textarea::placeholder {
+  color: #e0d3ff; /* soft lavender */
+  opacity: 1; /* full visibility */
+  font-style: italic;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+textarea:focus {
+  box-shadow:
+    0 0 12px rgba(200, 170, 255, 0.4),
+    0 0 30px rgba(220, 200, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#saveBtn {
+  background: var(--accent-color);
+  color: #fff;
+  font-family: var(--font-family);
+  border: none;
+  border-radius: 30px;
+  padding: 12px 24px;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--bg-glow);
+  transition: all 0.3s ease;
+  margin-top: 12px;
+}
+
+#saveBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px var(--bg-glow);
+}
+
+
+#saveBtn:active {
+  transform: scale(0.95);
+}
+
+
+#moodLog {
+  padding: 0;
+  margin-top: 30px;
+}
+
+.mood-entry {
+  border: 1px solid var(--log-border);
+  font-family: var(--font-family);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+
+.mood-entry:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 14px rgba(255, 230, 255, 0.4);
+}
+
+
+.logo-heading {
+  display: block;
+  width: 80%;
+  max-width: 220px;  /* ⬅️ Lower this to make the logo smaller overall */
+  margin: 20px auto;
+  filter: drop-shadow(0 0 6px rgba(180, 150, 255, 0.25));
+  transition: transform 0.3s ease, filter 0.3s ease;
+  object-fit: contain;
+}
+
+
+
+.logo-heading:hover {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 10px rgba(200, 180, 255, 0.5));
+}
+
+
+
+
+.glass-box {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 30px auto;
+  width: 90%;
+  max-width: 600px;
+  color: white;
+  z-index: 1;
+  position: relative;
+}
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+
+
+@keyframes subtleGlow {
+  0%, 100% {
+    text-shadow:
+      0 0 4px #5d3fd3,
+      0 0 8px #7f62f3,
+      0 0 15px #9a7dff,
+      0 0 30px #b48dff;
+  }
+  50% {
+    text-shadow:
+      0 0 6px #6d4ff5,
+      0 0 12px #9b7eff,
+      0 0 20px #c4adff,
+      0 0 40px #e0ccff;
+  }
+}
+
+.heading-box {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  padding: 16px;
+  border-radius: 20px;
+  max-width: 300px;         /* ⬅️ Optional: make it more compact */
+  width: 90%;
+  margin: 30px auto 20px auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.mood-selection {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.mood-options {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+
+.mood-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 10px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mood-label {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #fff;
+  font-weight: 500;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+textarea:focus {
+  outline: none;
+  border: 2px solid #b48dff;
+  box-shadow: 0 0 10px rgba(200, 170, 255, 0.4);
+  animation: pulse-glow 1.5s infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 10px rgba(200, 170, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 210, 255, 0.8);
+  }
+}
+
+#moodLog {
+  padding: 0;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.mood-entry {
+  background: rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #b48dff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(180, 150, 255, 0.2);
+  backdrop-filter: blur(8px);
+  font-size: 15px;
+  font-family: 'Segoe UI', sans-serif;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.mood-entry:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(190, 160, 255, 0.3);
+}
+
+@keyframes bubblePop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.mood-btn.pop img {
+  animation: bubblePop 0.3s ease;
+}
+
+.bubble-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.9);  /* ⬅️ High opacity for strong color */
+  border-radius: 50%;
+  animation: rise 12s infinite ease-in;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);  /* ⬅️ Strong glow */
+  /* Removed blur for sharper edges */
+}
+
+
+
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Optional: random positions and sizes */
+
+.bubble:nth-child(1) { left: 10%; animation-duration: 12s; width: 15px; height: 15px; }
+.bubble:nth-child(2) { left: 25%; animation-duration: 10s; width: 22px; height: 22px; }
+.bubble:nth-child(4) { left: 55%; animation-duration: 11s; width: 25px; height: 25px; }
+.bubble:nth-child(5) { left: 70%; animation-duration: 9s;  width: 20px; height: 20px; }
+.bubble:nth-child(6) { left: 85%; animation-duration: 13s; width: 17px; height: 17px; }
+.bubble:nth-child(7) { left: 15%; animation-duration: 15s; width: 24px; height: 24px; }
+.bubble:nth-child(8) { left: 50%; animation-duration: 10s; width: 19px; height: 19px; }
+
+#bubbleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  z-index: 99; /* Above everything */
+}
+
+.pop {
+  animation: bubblePop 0.3s ease-out;
+}
+
+@keyframes bubblePop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.theme-selector {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.theme-btn {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-family: 'Gloria Hallelujah', cursive;
+  border-radius: 20px;
+  padding: 8px 16px;
+  margin: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
+
+.theme-btn,
+.mood-label {
+  font-family: var(--font-family);
+}
+
+.theme-animation {
+  display: none;
+  position: fixed;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Sakura petal container */
+#sakuraPetals {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Individual petals */
+.petal {
+  position: absolute;
+  top: -10%;
+  background: pink;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: fall 4s ease-in-out infinite;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0.8);
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg) scale(1.2);
+  }
+}
+
+
+
+.sakura-animation {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sakura-animation::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, pink 40%, transparent 60%);
+  border-radius: 50%;
+  animation: fall 10s linear infinite;
+  opacity: 0.7;
+  transform: rotate(45deg);
+}
+
+@keyframes fall {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-200px) translateY(120vh) rotate(360deg);
+  }
+}
+
+#pastelClouds {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  animation: cloudMove 20s linear infinite;
+}
+
+@keyframes cloudMove {
+  0% {
+    transform: translateX(-100vw) scale(1);
+  }
+  100% {
+    transform: translateX(200vw) scale(1.1);
+  }
+}
+
+
+.pastel-animation {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.pastel-animation::before,
+.pastel-animation::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  width: 200px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 100px;
+  filter: blur(8px);
+  animation: drift 60s linear infinite;
+}
+
+.pastel-animation::after {
+  top: 40%;
+  left: 30%;
+  width: 250px;
+  animation-delay: 15s;
+}
+
+@keyframes drift {
+  0% {
+    left: -300px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+
+#forestWind {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.leaf {
+  position: absolute;
+  background: #228B22; /* forest green */
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  opacity: 0.9;
+  animation: blow 6s ease-in-out infinite;
+}
+
+@keyframes blow {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate(100vw, 100vh) rotate(720deg);
+  }
+}
+
+
+#neonLights {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.neon-glow {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #39ff14;
+  box-shadow:
+    0 0 15px #39ff14,
+    0 0 30px #39ff14,
+    0 0 45px #39ff14;
+  animation: neonPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+}
+
+.journal-icon {
+  width: 60px;
+  height: 60px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 50%;       /* ✅ Circle frame */
+  overflow: hidden;         /* ✅ Crop square image inside */
+}
+
+.journal-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;        /* ✅ Fit image inside circle cleanly */
+  border-radius: 50%;       /* ✅ Ensures image corners disappear */
+  box-shadow: 0 0 10px var(--accent-color);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  filter: brightness(0.8);  /* ✅ Lower brightness */
+}
+
+.journal-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px var(--accent-color);
+}
+
+
+.journal-container {
+  width: 85%;
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 25px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  font-family: 'Gloria Hallelujah', cursive;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.journal-heading {
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 25px;
+  text-shadow: 1px 1px 6px #ffb7d5;
+}
+
+.journal-container {
+  border: 2px dashed #ffc5ec;
+  animation: glow 4s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px #ffc5ec;
+  }
+  to {
+    box-shadow: 0 0 30px #ffc5ec;
+  }
+}
+
+/* Floating Particle Styles */
+.particle {
+  position: fixed;
+  top: 100vh;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatUp 10s linear infinite;
+  z-index: 0;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(30px);
+    opacity: 0;
+  }
+}
+
+.game-icon {
+  width: 60px;
+  height: 60px;
+  position: fixed;
+  bottom: 90px; /* ⬆️ shifted above journal icon (20px + 60px + 10px gap) */
+  right: 20px;
+  z-index: 1000;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.game-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent-color);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  filter: brightness(0.8);
+}
+
+.game-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px var(--accent-color);
+}
+
+.game-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-card {
+  width: 160px;
+  height: 160px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.game-card:hover {
+  transform: scale(1.05);
+}
+
+.game-card-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.game-card-label {
+  margin-top: 10px;
+  font-family: 'Gloria Hallelujah', cursive;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+}
+
+
+.game-card:hover {
+  box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.2);
+  transform: scale(1.03);
+  transition: all 0.3s ease-in-out;
+}
+
+@keyframes softPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+
+.game-card {
+  animation: softPulse 4s infinite;
+}
+
+
+.game-card-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.sparkle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://i.ibb.co/ZG04ptV/sparkle.gif') center center/cover no-repeat;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+  animation: sparkleFade 5s ease-in-out infinite;
+}
+
+.game-card {
+  position: relative;
+  z-index: 1;
+  /* Existing styles already here */
+}
+
+@keyframes sparkleFade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+
