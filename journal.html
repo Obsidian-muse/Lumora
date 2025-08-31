@@ -1,41 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="galaxy">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-translate="journal-entries">Dreamy Journal</title>
+  <title>🌸 Dreamy Journal 🌸</title>
   <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
   <style>
+    /* ----- Page & Body ----- */
     body {
       margin: 0;
       padding: 0;
       background: url('assets/galaxy.jpg') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Gloria Hallelujah', cursive;
-      overflow: hidden;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 50px;
+      position: relative;
     }
 
+    /* ----- Floating Particles ----- */
+    .particle {
+      position: fixed;
+      bottom: -20px;
+      width: 12px;       /* Moderate size */
+      height: 12px;      /* Moderate size */
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: floatUp linear infinite;
+      z-index: 0;
+      opacity: 0.8;
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      100% { transform: translateY(-120vh) scale(0.8); opacity: 0; }
+    }
+
+    /* ----- Journal Container ----- */
     .journal-container {
-  max-width: 800px;
-  margin: 100px auto;
+  max-width: 900px;   /* increased width */
+  width: 95%;         /* take more horizontal space on smaller screens */
   background: rgba(255, 255, 255, 0.08);
-  padding: 40px;
+  backdrop-filter: blur(14px);
   border-radius: 25px;
-  text-align: center;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 0 20px rgba(255,255,255,0.2);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  padding: 40px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
   position: relative;
-  border: none;
 }
 
-
-
+    /* ----- Heading ----- */
     .journal-heading {
       font-size: 2.5rem;
       color: #fff;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
+      text-shadow: 0 0 12px rgba(255,255,255,0.5);
     }
 
+    /* ----- Textarea ----- */
     textarea {
       width: 100%;
       padding: 20px;
@@ -45,191 +76,240 @@
       color: white;
       font-family: 'Gloria Hallelujah', cursive;
       font-size: 1.1rem;
-      box-shadow: 0 0 10px rgba(255,255,255,0.3);
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
       resize: none;
       outline: none;
-     
-
+      min-height: 120px;
+      margin-bottom: 20px;
     }
 
     textarea::placeholder {
       color: rgba(255,255,255,0.7);
     }
 
+    /* ----- Save Button ----- */
     .save-entry-btn {
-      margin-top: 20px;
-      background: #ffb7d5;
+      background: rgba(255, 183, 213, 0.6);
       border: none;
-      padding: 10px 20px;
-      border-radius: 20px;
+      padding: 12px 25px;
+      border-radius: 25px;
       font-family: 'Gloria Hallelujah', cursive;
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: #fff;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 20px rgba(255,183,213,0.4);
       transition: all 0.3s ease;
+      margin-bottom: 30px;
     }
 
     .save-entry-btn:hover {
-      background: #ff90c2;
-      transform: scale(1.05);
+      background: rgba(255, 183, 213, 0.9);
+      transform: scale(1.08);
     }
 
-    canvas#particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
+    /* ----- Entries List ----- */
+    #entriesList {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px; /* perfect equal spacing */
     }
 
-    .journal-container, textarea, .save-entry-btn {
+    .journal-entry {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 20px;
+      color: #fff;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
       position: relative;
-      z-index: 1;
     }
 
-    .particle {
-  position: fixed;
-  bottom: -20px;
-  width: 8px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 50%;
-  animation: floatUp linear infinite;
-  z-index: 0;
-  opacity: 0.8;
-  box-shadow: 0 0 10px rgba(255,255,255,0.5);
-}
+    .journal-entry p {
+      margin: 0 0 10px 0;
+      word-wrap: break-word;
+    }
 
-@keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 0.6;
+    .journal-entry small {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-bottom: 10px;
+    }
+
+    .entry-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .edit-btn, .delete-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      padding: 6px 15px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-family: 'Gloria Hallelujah', cursive;
+      color: #fff;
+      transition: 0.2s;
+    }
+
+    .edit-btn:hover {
+      background: rgba(255,255,255,0.35);
+    }
+
+    .delete-btn:hover {
+      background: rgba(255,100,150,0.7);
+    }
+
+    /* ----- No entries message ----- */
+    .no-entries {
+      text-align: center;
+      color: rgba(255,255,255,0.7);
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+     /* Bubble pop style */
+  .bubble-pop {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: popBubble 1s ease-out forwards;
+    z-index: 1000;
   }
-  100% {
-    transform: translateY(-120vh) scale(0.8);
-    opacity: 0;
+
+  @keyframes popBubble {
+    0% { transform: scale(1) translateY(0); opacity: 1; }
+    100% { transform: scale(1.8) translateY(-80px); opacity: 0; }
   }
-}
-
-.bubble-pop {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #ffc0cb, #ff69b4, #ff1493);
-  pointer-events: none;
-  animation: popBubble 1s ease-out forwards;
-  z-index: 1000;
-}
-
-@keyframes popBubble {
-  0% {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.8) translateY(-80px);
-    opacity: 0;
-  }
-}
-
-.back-icon {
-  width: 60px;
-  height: 60px;
-  position: fixed;
-  top: 20px;         /* 🔼 Push down from the top */
-  left: 20px;        /* 🔙 Push right from the left */
-  z-index: 1000;
-  cursor: pointer;
-  border-radius: 50%;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.back-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  box-shadow: 0 0 10px var(--accent-color);
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  filter: brightness(0.8);
-}
-
-.back-icon:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 20px var(--accent-color);
-}
-
-
-</style>
-
+  </style>
 </head>
 <body>
 
-  <!-- Back button -->
-  <div class="back-icon" onclick="window.location.href='index.html'">
-    <img src="assets/arrow.jpeg" alt="Back" loading="lazy">
-  </div>
-
-
-    <div class="journal-container">
-    <h1 class="journal-heading" data-translate="🌸 My Dreamy Journal 🌸">🌸 My Dreamy Journal 🌸</h1>
-    <textarea id="journal-text" rows="6" placeholder="Write your magical thoughts here..." spellcheck="false"></textarea>
-    <div id="entriesList">
-        <p class="no-entries" data-translate="no-entries">No journal entries yet. Start by logging your mood!</p>
-      </div>
-    <br />
+  <!-- Journal Container -->
+  <div class="journal-container">
+    <h1 class="journal-heading">🌸 My Dreamy Journal 🌸</h1>
+    <textarea id="journal-text" placeholder="Write your magical thoughts here..." spellcheck="false"></textarea>
     <button class="save-entry-btn">Save Entry</button>
+    <div id="entriesList">
+      <p class="no-entries">No journal entries yet. Start by logging your mood!</p>
+    </div>
   </div>
 
+  <!-- Floating Particles -->
   <script>
     function createFloatingParticles() {
-  for (let i = 0; i < 40; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    particle.style.left = Math.random() * 100 + 'vw';
-    particle.style.animationDelay = Math.random() * 10 + 's';
-    particle.style.animationDuration = (8 + Math.random() * 5) + 's';
-    document.body.appendChild(particle);
-  }
-}
+      for (let i = 0; i < 40; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.animationDelay = Math.random() * 10 + 's';
+        particle.style.animationDuration = (6 + Math.random() * 6) + 's';
+        document.body.appendChild(particle);
+      }
+    }
+    createFloatingParticles();
+  </script>
 
-// Call it when the page loads
-document.addEventListener("DOMContentLoaded", () => {
-  createFloatingParticles();
-});
+  <!-- Journal Functionality -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const journalInput = document.getElementById("journal-text");
+      const saveBtn = document.querySelector(".save-entry-btn");
+      const entriesList = document.getElementById("entriesList");
 
-document.getElementById('journal-text').addEventListener('input', function (e) {
-  for (let i = 0; i < 3; i++) {
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble-pop';
+      let savedEntries = JSON.parse(localStorage.getItem("journalEntries")) || [];
 
-    const rect = this.getBoundingClientRect();
-    const x = rect.left + Math.random() * rect.width;
-    const y = rect.top + Math.random() * rect.height;
+      function renderEntries() {
+        entriesList.innerHTML = '';
+        if (savedEntries.length === 0) {
+          entriesList.innerHTML = `<p class="no-entries">No journal entries yet. Start by logging your mood!</p>`;
+          return;
+        }
 
-    bubble.style.left = `${x}px`;
-    bubble.style.top = `${y}px`;
+        savedEntries.slice().reverse().forEach((entry, index) => {
+          const div = document.createElement("div");
+          div.className = "journal-entry";
+          div.innerHTML = `
+            <p>${entry.text}</p>
+            <small>${entry.date}</small>
+            <div class="entry-buttons">
+              <button class="edit-btn">Edit</button>
+              <button class="delete-btn">Delete</button>
+            </div>
+          `;
 
-    const colors = ['#ffc0cb', '#ffb7d5', '#c8f5ff', '#fbc2eb', '#e0bbff', '#ffecb3'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    bubble.style.background = `radial-gradient(circle, ${color}, white)`;
+          // Edit
+          div.querySelector(".edit-btn").addEventListener("click", () => {
+            const newText = prompt("Edit your entry:", entry.text);
+            if (newText !== null) {
+              savedEntries[savedEntries.length - 1 - index].text = newText;
+              localStorage.setItem("journalEntries", JSON.stringify(savedEntries));
+              renderEntries();
+            }
+          });
 
-    document.body.appendChild(bubble);
+          // Delete
+          div.querySelector(".delete-btn").addEventListener("click", () => {
+            if (confirm("Delete this entry?")) {
+              savedEntries.splice(savedEntries.length - 1 - index, 1);
+              localStorage.setItem("journalEntries", JSON.stringify(savedEntries));
+              renderEntries();
+            }
+          });
 
-    setTimeout(() => {
-      bubble.remove();
-    }, 1000);
-  }
-});
+          entriesList.appendChild(div);
+        });
+      }
 
-</script>
-  <script src="script.js"></script>
-  <script src="journal.js"></script>
+      // Save entry
+      saveBtn.addEventListener("click", () => {
+        const text = journalInput.value.trim();
+        if (!text) return;
+
+        const entry = {
+          text,
+          date: new Date().toLocaleString()
+        };
+
+        savedEntries.push(entry);
+        localStorage.setItem("journalEntries", JSON.stringify(savedEntries));
+        journalInput.value = '';
+        renderEntries();
+      });
+
+      renderEntries();
+    });
+
+    // Bubble pop effect while typing
+  document.getElementById('journal-text').addEventListener('input', function () {
+    for (let i = 0; i < 3; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble-pop';
+
+      const rect = this.getBoundingClientRect();
+      const x = rect.left + Math.random() * rect.width;
+      const y = rect.top + Math.random() * rect.height;
+
+      bubble.style.left = `${x}px`;
+      bubble.style.top = `${y}px`;
+
+      // Random pastel colors for dreamy effect
+      const colors = ['#ffc0cb', '#ffb7d5', '#c8f5ff', '#fbc2eb', '#e0bbff', '#ffecb3'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      bubble.style.background = `radial-gradient(circle, ${color}, white)`;
+
+      document.body.appendChild(bubble);
+
+      setTimeout(() => {
+        bubble.remove();
+      }, 1000); // disappears after 1 second
+    }
+  });
+  </script>
 </body>
 </html>
